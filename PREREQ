@@ -1,0 +1,21 @@
+#!/usr/bin/perl -w
+use strict;
+use vars qw(%PREREQ %RECOMMEND %BUILD_REQ $OK);
+
+$OK = ($^O =~ m{ (?:free|open|net) bsd \z }xmsi) ? 1 : 0;
+
+%BUILD_REQ = (
+   'Test::More'       => '0.40',
+   'Test::Sys::Info'  => '0.12',
+);
+
+%PREREQ = (
+   'IO::File'         => 0,
+   'Unix::Processors' => 0,
+   'BSD::Sysctl'      => '0.08',
+   'Sys::Info::Base'  => '0.69_05',
+);
+
+1;
+
+__END__

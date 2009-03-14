@@ -1,0 +1,14 @@
+lib/Sys/Info/Driver/BSD.pm
+lib/Sys/Info/Driver/BSD/Device.pm
+lib/Sys/Info/Driver/BSD/OS.pm
+lib/Sys/Info/Driver/BSD/Device/CPU.pm
+t/01-pod.t
+t/02-pod-coverage.t
+t/03-basic.t
+Makefile.PL
+Build.PL
+Changes
+MANIFEST
+README
+PREREQ
+META.yml
