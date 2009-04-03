@@ -1,6 +1,6 @@
 ---
 name: Sys-Info-Driver-BSD
-version: 0.69_07
+version: 0.69_10
 author:
   - 'Burak Gursoy <burak@cpan.org>'
 abstract: BSD driver for Sys::Info
@@ -10,24 +10,24 @@ resources:
 requires:
   BSD::Sysctl: 0.08
   IO::File: 0
-  Sys::Info::Base: 0.69_05
+  Sys::Info::Base: 0.69_10
   Unix::Processors: 0
 build_requires:
   Test::More: 0.40
-  Test::Sys::Info: 0.12
+  Test::Sys::Info: 0.13
 provides:
   Sys::Info::Driver::BSD:
     file: lib/Sys/Info/Driver/BSD.pm
-    version: 0.69_07
+    version: 0.69_10
   Sys::Info::Driver::BSD::Device:
     file: lib/Sys/Info/Driver/BSD/Device.pm
-    version: 0.69_07
+    version: 0.69_10
   Sys::Info::Driver::BSD::Device::CPU:
     file: lib/Sys/Info/Driver/BSD/Device/CPU.pm
-    version: 0.69_07
+    version: 0.69_10
   Sys::Info::Driver::BSD::OS:
     file: lib/Sys/Info/Driver/BSD/OS.pm
-    version: 0.69_07
+    version: 0.69_10
 generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

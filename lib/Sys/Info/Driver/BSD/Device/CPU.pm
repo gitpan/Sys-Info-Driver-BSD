@@ -8,7 +8,7 @@ use Carp qw( croak );
 use Sys::Info::Constants qw( LIN_MACHINE );
 use Sys::Info::Driver::BSD;
 
-$VERSION = '0.69_07';
+$VERSION = '0.69_10';
 
 sub identify {
     my $self = shift;
@@ -103,7 +103,7 @@ Copyright 2009 Burak Gürsoy. All rights reserved.
 =head1 LICENSE
 
 This library is free software; you can redistribute it and/or modify 
-it under the same terms as Perl itself, either Perl version 5.8.8 or, 
+it under the same terms as Perl itself, either Perl version 5.10.0 or, 
 at your option, any later version of Perl 5 you may have available.
 
 =cut

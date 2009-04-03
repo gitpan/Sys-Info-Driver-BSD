@@ -1,7 +1,7 @@
 Sys::Info::Driver::BSD
 ======================
 
-Fetch information about the host system.
+BSD driver for Sys::Info.
 
 Read the module's POD for documentation.
 See the tests for examples.

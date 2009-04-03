@@ -2,5 +2,8 @@ Revision history for Perl extension Sys::Info::Driver::BSD.
 
 Time zone is GMT+2.
 
+0.69_10 Fri Apr  3 22:52:04 2009
+    => Update distro.
+
 0.69_07 Sat Mar 14 15:22:59 2009
     => First release.
