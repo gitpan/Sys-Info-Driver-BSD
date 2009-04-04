@@ -59,6 +59,9 @@ sub load {
     return $loads->[$level];
 }
 
+sub bitness {
+    my $self = shift;
+}
 
 1;
 
@@ -85,6 +88,10 @@ See identify in L<Sys::Info::Device::CPU>.
 =head2 load
 
 See load in L<Sys::Info::Device::CPU>.
+
+=head2 bitness
+
+See bitness in L<Sys::Info::Device::CPU>.
 
 =head1 SEE ALSO
 

@@ -46,7 +46,6 @@ sub meta {
     my $usermem = fsysctl('hw.usermem');
     my %info;
 
-
     $info{manufacturer}              = $MANUFACTURER->{ $^O };
     $info{build_type}                = undef;
     $info{owner}                     = undef;
