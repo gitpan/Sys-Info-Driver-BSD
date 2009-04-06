@@ -9,7 +9,7 @@ use Sys::Info::Driver::BSD;
 use Sys::Info::Constants qw( :linux );
 use Sys::Info::Driver::BSD;
 
-$VERSION = '0.69_10';
+$VERSION = '0.70';
 
 my %OSVERSION;
 

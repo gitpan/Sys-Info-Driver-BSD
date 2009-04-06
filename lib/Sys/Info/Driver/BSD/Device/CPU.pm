@@ -8,7 +8,7 @@ use Carp qw( croak );
 use Sys::Info::Constants qw( LIN_MACHINE );
 use Sys::Info::Driver::BSD;
 
-$VERSION = '0.69_10';
+$VERSION = '0.70';
 
 sub identify {
     my $self = shift;

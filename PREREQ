@@ -13,7 +13,7 @@ $OK = ($^O =~ m{ (?:free|open|net) bsd \z }xmsi) ? 1 : 0;
    'IO::File'         => 0,
    'Unix::Processors' => 0,
    'BSD::Sysctl'      => '0.08',
-   'Sys::Info::Base'  => '0.69_11',
+   'Sys::Info::Base'  => '0.70',
 );
 
 1;
