@@ -2,7 +2,7 @@ package Sys::Info::Driver::BSD::Device;
 use strict;
 use vars qw( $VERSION );
 
-$VERSION = '0.70';
+$VERSION = '0.72';
 
 1;
 
@@ -17,6 +17,12 @@ Sys::Info::Driver::BSD::Device - Base class for BSD device drivers
     use base qw( Sys::Info::Driver::BSD::Device );
 
 =head1 DESCRIPTION
+
+This document describes version C<0.72> of C<Sys::Info::Driver::BSD::Device>
+released on C<3 May 2009>.
+
+This document describes version C<0.72> of C<Sys::Info::Driver::BSD::Device>
+released on C<3 May 2009>.
 
 Base class for BSD device drivers.
 

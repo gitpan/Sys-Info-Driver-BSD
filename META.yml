@@ -1,33 +1,38 @@
 ---
 name: Sys-Info-Driver-BSD
-version: 0.70
+version: 0.72
 author:
   - 'Burak Gursoy <burak@cpan.org>'
 abstract: BSD driver for Sys::Info
 license: perl
 resources:
-  license: ~
+  license: http://dev.perl.org/licenses/
+  repository: http://bitbucket.org/burak/cpan-sys-info-driver-bsd/
 requires:
   BSD::Sysctl: 0.08
-  IO::File: 0
-  Sys::Info::Base: 0.70
+  Sys::Info::Base: 0.72
   Unix::Processors: 0
 build_requires:
   Test::More: 0.40
-  Test::Sys::Info: 0.13
+  Test::Sys::Info: 0.15
 provides:
   Sys::Info::Driver::BSD:
     file: lib/Sys/Info/Driver/BSD.pm
-    version: 0.70
+    version: 0.72
   Sys::Info::Driver::BSD::Device:
     file: lib/Sys/Info/Driver/BSD/Device.pm
-    version: 0.70
+    version: 0.72
   Sys::Info::Driver::BSD::Device::CPU:
     file: lib/Sys/Info/Driver/BSD/Device/CPU.pm
-    version: 0.70
+    version: 0.72
   Sys::Info::Driver::BSD::OS:
     file: lib/Sys/Info/Driver/BSD/OS.pm
-    version: 0.70
+    version: 0.72
+no_index:
+  directory:
+    - monolithic_version
+    - builder
+    - t
 generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

@@ -8,7 +8,7 @@ use Carp qw( croak );
 use Sys::Info::Constants qw( LIN_MACHINE );
 use Sys::Info::Driver::BSD;
 
-$VERSION = '0.70';
+$VERSION = '0.72';
 
 sub identify {
     my $self = shift;
@@ -76,6 +76,12 @@ Sys::Info::Driver::BSD::Device::CPU - BSD CPU Device Driver
 -
 
 =head1 DESCRIPTION
+
+This document describes version C<0.72> of C<Sys::Info::Driver::BSD::Device::CPU>
+released on C<3 May 2009>.
+
+This document describes version C<0.72> of C<Sys::Info::Driver::BSD::Device::CPU>
+released on C<3 May 2009>.
 
 Identifies the CPU with L<Unix::Processors>, L<POSIX>.
 

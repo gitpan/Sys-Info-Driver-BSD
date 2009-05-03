@@ -5,7 +5,7 @@ use BSD::Sysctl qw( sysctl sysctl_exists );
 use Exporter ();
 use Carp qw( croak );
 
-$VERSION = '0.70';
+$VERSION = '0.72';
 @ISA     = qw( Exporter );
 @EXPORT  = qw( fsysctl nsysctl );
 
@@ -35,6 +35,12 @@ Sys::Info::Driver::BSD - BSD driver for Sys::Info
     use Sys::Info::Driver::BSD;
 
 =head1 DESCRIPTION
+
+This document describes version C<0.72> of C<Sys::Info::Driver::BSD>
+released on C<3 May 2009>.
+
+This document describes version C<0.72> of C<Sys::Info::Driver::BSD>
+released on C<3 May 2009>.
 
 This is the main module in the C<BSD> driver collection.
 
