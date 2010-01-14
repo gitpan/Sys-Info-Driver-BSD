@@ -1,15 +1,15 @@
 package Sys::Info::Driver::BSD::OS;
 use strict;
+use warnings;
 use vars qw( $VERSION );
 use base qw( Sys::Info::Base );
 use POSIX ();
 use Cwd;
 use Carp qw( croak );
-use Sys::Info::Driver::BSD;
-use Sys::Info::Constants qw( :linux );
+use Sys::Info::Constants qw( LIN_REAL_NAME_FIELD );
 use Sys::Info::Driver::BSD;
 
-$VERSION = '0.72';
+$VERSION = '0.73';
 
 my %OSVERSION;
 
@@ -25,12 +25,12 @@ sub logon_server {}
 
 sub edition {
     my $self = shift->_populate_osversion;
-    $OSVERSION{RAW}->{EDITION};
+    return $OSVERSION{RAW}->{EDITION};
 }
 
 sub tz {
     my $self = shift;
-    return POSIX::strftime("%Z", localtime);
+    return POSIX::strftime('%Z', localtime);
 }
 
 sub meta {
@@ -40,10 +40,22 @@ sub meta {
     require POSIX;
     require Sys::Info::Device;
 
-    my $cpu     = Sys::Info::Device->new('CPU');
-    my $arch    = ($cpu->identify)[0]->{architecture};
-    my $physmem = fsysctl('hw.physmem');
-    my $usermem = fsysctl('hw.usermem');
+    my $cpu       = Sys::Info::Device->new('CPU');
+    my $arch      = ($cpu->identify)[0]->{architecture};
+    my $physmem   = fsysctl('hw.physmem');
+    my $usermem   = fsysctl('hw.usermem');
+    my $swap_call = $^O eq 'openbsd' ? '/sbin/swapctl -l' : '/usr/sbin/swapinfo';
+    my $swap_buf  = qx($swap_call 2>&1);
+    my %swap;
+    if ( $swap_buf ) {
+        foreach my $line ( split m{\n}xms, $swap_buf ) {
+            chomp $line;
+            next if $line =~ m{ \A Device }xms;
+            @swap{ qw/ path size used / } = split m{\s+}xms, $line;
+            last;
+        }
+    }
+
     my %info;
 
     $info{manufacturer}              = $MANUFACTURER->{ $^O };
@@ -56,8 +68,8 @@ sub meta {
 
     $info{physical_memory_total}     = $physmem;
     $info{physical_memory_available} = $physmem - $usermem;
-    $info{page_file_total}           = fsysctl('hw.pagesize');
-    $info{page_file_available}       = undef;
+    $info{page_file_total}           = $swap{size};
+    $info{page_file_available}       = $swap{size} - $swap{used};
 
     # windows specific
     $info{windows_dir}               = undef;
@@ -65,9 +77,9 @@ sub meta {
 
     $info{system_manufacturer}       = undef;
     $info{system_model}              = undef;
-    $info{system_type}               = sprintf "%s based Computer", $arch;
+    $info{system_type}               = sprintf '%s based Computer', $arch;
 
-    $info{page_file_path}            = undef;
+    $info{page_file_path}            = $swap{path};
 
     return %info;
 }
@@ -78,8 +90,9 @@ sub tick_count {
 }
 
 sub name {
-    my $self = shift->_populate_osversion;
-    my %opt  = @_ % 2 ? () : (@_);
+    my($self, @args) = @_;
+    $self->_populate_osversion;
+    my %opt  = @args % 2 ? () : @args;
     my $id   = $opt{long} ? ($opt{edition} ? 'LONGNAME_EDITION' : 'LONGNAME')
              :              ($opt{edition} ? 'NAME_EDITION'     : 'NAME'    )
              ;
@@ -97,32 +110,31 @@ sub is_root {
     my $id   = POSIX::geteuid();
     my $gid  = POSIX::getegid();
     return 0 if $@;
-    return 0 if ! defined($id) || ! defined($gid);
+    return 0 if ! defined $id || ! defined $gid;
     return $id == 0 && $gid == 0; # && $name eq 'root'; # $name is never root!
 }
 
 sub login_name {
-    my $self  = shift;
-    my %opt   = @_ % 2 ? () : (@_);
+    my($self, @args) = @_;
+    my %opt   = @args % 2 ? () : @args;
     my $login = POSIX::getlogin() || return;
     my $rv    = eval { $opt{real} ? (getpwnam $login)[LIN_REAL_NAME_FIELD] : $login };
     $rv =~ s{ [,]{3,} \z }{}xms if $opt{real};
     return $rv;
 }
 
-sub node_name { (POSIX::uname())[LIN_NODENAME] }
+sub node_name { return shift->uname->{nodename} }
 
 sub domain_name { }
 
 sub fs {
     my $self = shift;
-    return(
-        unimplemented => 1,
-    );
+    return unimplemented => 1;
 }
 
 sub bitness {
     my $self = shift;
+    return;
 }
 
 # ------------------------[ P R I V A T E ]------------------------ #
@@ -133,6 +145,7 @@ sub _file_has_substr {
     my $str  = shift;
     return if ! -e $file || ! -f _;
     my $raw = $self->slurp( $file ) =~ m{$str}xms;
+    return $raw;
 }
 
 sub _probe_edition {
@@ -158,7 +171,7 @@ sub _populate_osversion {
     require POSIX;
     my($sysname, $nodename, $release, $version, $machine) = POSIX::uname();
 
-    my(undef, $raw)  = split m{[#]}, $version;
+    my(undef, $raw)  = split m{\#}xms, $version;
     my($date, undef) = split m{ \s+ \S+ \z }xms, $raw;
     my $build_date = $date ? $self->date2time( $date ) : undef;
     my $build      = $date;
@@ -169,8 +182,8 @@ sub _populate_osversion {
     %OSVERSION = (
         NAME             => $sysname,
         NAME_EDITION     => $edition ? "$sysname ($edition)" : $sysname,
-        LONGNAME         => '', # will be set below
-        LONGNAME_EDITION => '', # will be set below
+        LONGNAME         => q{}, # will be set below
+        LONGNAME_EDITION => q{}, # will be set below
         VERSION  => $release,
         KERNEL   => undef,
         RAW      => {
@@ -180,10 +193,10 @@ sub _populate_osversion {
                     },
     );
 
-    $OSVERSION{LONGNAME}         = sprintf "%s %s (kernel: %s)",
+    $OSVERSION{LONGNAME}         = sprintf '%s %s (kernel: %s)',
                                    @OSVERSION{ qw/ NAME         VERSION / },
                                    $kernel;
-    $OSVERSION{LONGNAME_EDITION} = sprintf "%s %s (kernel: %s)",
+    $OSVERSION{LONGNAME_EDITION} = sprintf '%s %s (kernel: %s)',
                                    @OSVERSION{ qw/ NAME_EDITION VERSION / },
                                    $kernel;
     return;
@@ -203,11 +216,8 @@ Sys::Info::Driver::BSD::OS - BSD backend
 
 =head1 DESCRIPTION
 
-This document describes version C<0.72> of C<Sys::Info::Driver::BSD::OS>
-released on C<3 May 2009>.
-
-This document describes version C<0.72> of C<Sys::Info::Driver::BSD::OS>
-released on C<3 May 2009>.
+This document describes version C<0.73> of C<Sys::Info::Driver::BSD::OS>
+released on C<14 January 2010>.
 
 -
 
@@ -253,16 +263,16 @@ L<http://www.redhat.com/docs/manuals/linux/RHL-9-Manual/ref-guide/s1-proc-topfil
 
 =head1 AUTHOR
 
-Burak Gürsoy, E<lt>burakE<64>cpan.orgE<gt>
+Burak Gursoy <burak@cpan.org>.
 
 =head1 COPYRIGHT
 
-Copyright 2006-2009 Burak Gürsoy. All rights reserved.
+Copyright 2009 - 2010 Burak Gursoy. All rights reserved.
 
 =head1 LICENSE
 
 This library is free software; you can redistribute it and/or modify 
-it under the same terms as Perl itself, either Perl version 5.10.0 or, 
+it under the same terms as Perl itself, either Perl version 5.8.8 or, 
 at your option, any later version of Perl 5 you may have available.
 
 =cut

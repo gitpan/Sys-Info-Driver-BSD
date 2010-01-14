@@ -2,6 +2,13 @@ Revision history for Perl extension Sys::Info::Driver::BSD.
 
 Time zone is GMT+2.
 
+0.73 Thu Jan 14 02:02:42 2010
+    => Support new uname().
+    => Perl::Critic refactoring.
+    => Implemented CPU->bitness.
+    => CPU Flags detection.
+    => Swap file detection.
+
 0.72 Sun May  3 03:30:41 2009
     => Update builder.
 

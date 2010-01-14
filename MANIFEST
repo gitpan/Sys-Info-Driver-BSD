@@ -8,6 +8,7 @@ Changes
 MANIFEST
 README
 SPEC
+.perlcriticrc
 builder/Build.pm
 builder/Build/Spec.pm
 t/201-pod.t

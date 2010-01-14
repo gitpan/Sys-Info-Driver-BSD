@@ -1,21 +1,21 @@
 package Sys::Info::Driver::BSD::Device::CPU;
 use strict;
+use warnings;
 use vars qw($VERSION);
 use base qw(Sys::Info::Base);
 use Unix::Processors;
 use POSIX ();
 use Carp qw( croak );
-use Sys::Info::Constants qw( LIN_MACHINE );
 use Sys::Info::Driver::BSD;
 
-$VERSION = '0.72';
+$VERSION = '0.73';
 
 sub identify {
     my $self = shift;
 
     if ( ! $self->{META_DATA} ) {
         my $up   = Unix::Processors->new;
-        my $mach = (POSIX::uname)[LIN_MACHINE] || fsysctl('hw.machine_arch'); # hw.machine?
+        my $mach = $self->uname->{machine} || fsysctl('hw.machine_arch'); # hw.machine?
         my $arch = $mach =~ m{ i [0-9] 86 }xmsi ? 'x86'
                  : $mach =~ m{ ia64       }xmsi ? 'IA64'
                  : $mach =~ m{ x86_64     }xmsi ? 'AMD-64'
@@ -25,9 +25,18 @@ sub identify {
         $name =~ s{\s+}{ }xms;
         my $byteorder = nsysctl('hw.byteorder');
         my @flags;
-        push @flags, 'fpu' if nsysctl('hw.floatingpoint');
+        push @flags, 'FPU' if nsysctl('hw.floatingpoint');
 
         $self->{META_DATA} = [];
+
+        my %d = dmesg();
+        if ( $d{CPU} ) {
+            my %cpu = %{ $d{CPU} };
+            for my $slot ( @cpu{ qw/ flags AMD_flags / } ) {
+                next if ! $slot;
+                push @flags, @{ $slot };
+            }
+        }
 
         push @{ $self->{META_DATA} }, {
             architecture                 => $arch,
@@ -61,6 +70,14 @@ sub load {
 
 sub bitness {
     my $self = shift;
+    my %i    = dmesg();
+    my $cpu  = $i{CPU} || return;
+    my %flags;
+    foreach my $slot ( $cpu->{flags}, $cpu->{AMD_flags} ) {
+        next if ! $slot;
+        $flags{ $_ } = 1 for @{ $slot };
+    }
+    return $flags{LM} ? '64' : '32';
 }
 
 1;
@@ -77,11 +94,8 @@ Sys::Info::Driver::BSD::Device::CPU - BSD CPU Device Driver
 
 =head1 DESCRIPTION
 
-This document describes version C<0.72> of C<Sys::Info::Driver::BSD::Device::CPU>
-released on C<3 May 2009>.
-
-This document describes version C<0.72> of C<Sys::Info::Driver::BSD::Device::CPU>
-released on C<3 May 2009>.
+This document describes version C<0.73> of C<Sys::Info::Driver::BSD::Device::CPU>
+released on C<14 January 2010>.
 
 Identifies the CPU with L<Unix::Processors>, L<POSIX>.
 
@@ -107,16 +121,16 @@ L<Unix::Processors>, L<POSIX>.
 
 =head1 AUTHOR
 
-Burak Gürsoy, E<lt>burakE<64>cpan.orgE<gt>
+Burak Gursoy <burak@cpan.org>.
 
 =head1 COPYRIGHT
 
-Copyright 2009 Burak Gürsoy. All rights reserved.
+Copyright 2009 - 2010 Burak Gursoy. All rights reserved.
 
 =head1 LICENSE
 
 This library is free software; you can redistribute it and/or modify 
-it under the same terms as Perl itself, either Perl version 5.10.0 or, 
+it under the same terms as Perl itself, either Perl version 5.8.8 or, 
 at your option, any later version of Perl 5 you may have available.
 
 =cut
