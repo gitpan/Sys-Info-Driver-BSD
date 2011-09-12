@@ -7,7 +7,7 @@ die "OS unsupported\n" if ! $OK;
     requires    => {
         'BSD::Sysctl'      => '0.08',
         'Unix::Processors' => 0,
-        'Sys::Info::Base'  => '0.73',
+        'Sys::Info::Base'  => '0.7801',
         ($] < 5.006 ? ( 'warnings::compat' => 0 ) : ()),
     },
     build_requires => {

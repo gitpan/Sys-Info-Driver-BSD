@@ -6,10 +6,10 @@ use base qw( Sys::Info::Base );
 use POSIX ();
 use Cwd;
 use Carp qw( croak );
-use Sys::Info::Constants qw( LIN_REAL_NAME_FIELD );
+use Sys::Info::Constants qw( USER_REAL_NAME_FIELD );
 use Sys::Info::Driver::BSD;
 
-$VERSION = '0.73';
+$VERSION = '0.7801';
 
 my %OSVERSION;
 
@@ -118,7 +118,7 @@ sub login_name {
     my($self, @args) = @_;
     my %opt   = @args % 2 ? () : @args;
     my $login = POSIX::getlogin() || return;
-    my $rv    = eval { $opt{real} ? (getpwnam $login)[LIN_REAL_NAME_FIELD] : $login };
+    my $rv    = eval { $opt{real} ? (getpwnam $login)[USER_REAL_NAME_FIELD] : $login };
     $rv =~ s{ [,]{3,} \z }{}xms if $opt{real};
     return $rv;
 }
@@ -216,8 +216,8 @@ Sys::Info::Driver::BSD::OS - BSD backend
 
 =head1 DESCRIPTION
 
-This document describes version C<0.73> of C<Sys::Info::Driver::BSD::OS>
-released on C<14 January 2010>.
+This document describes version C<0.7801> of C<Sys::Info::Driver::BSD::OS>
+released on C<12 September 2011>.
 
 -
 
@@ -267,7 +267,7 @@ Burak Gursoy <burak@cpan.org>.
 
 =head1 COPYRIGHT
 
-Copyright 2009 - 2010 Burak Gursoy. All rights reserved.
+Copyright 2009 - 2011 Burak Gursoy. All rights reserved.
 
 =head1 LICENSE
 
